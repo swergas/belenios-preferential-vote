@@ -1,0 +1,125 @@
+html {
+  --draggable-handle-color: #777;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.clickable:hover, .clickable *:hover {
+  cursor: pointer;
+}
+
+.draggable, .draggable:hover {
+  cursor: move;
+}
+
+.preferential-vote-ordering-ui {
+  max-width: 500px;
+}
+
+.level-creator {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.level-creator__add-icon {
+  background: #ccc;
+  border-radius: 30px;
+  display: flex;
+  font-size: 11px;
+  padding: 6px 10px;
+}
+
+.column-container {
+  margin: 8px;
+  border: 1px solid lightgrey;
+  border-radius: 6px;
+  max-width: 500px;
+}
+
+.column-header {
+  display: flex;
+  padding: 8px;
+  min-height: 30px;
+}
+
+.column-title {
+  padding: 0;
+  flex-grow: 1;
+  margin: 0;
+}
+
+.column-actions {
+
+}
+
+.column-actions__delete-column {
+  background: #ccc;
+  border-radius: 30px;
+  width: 25px;
+  display: inline-block;
+  height: 25px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.column-task-list {
+  padding: 8px;
+  transition: all 350ms;
+  min-height: 44px; /* for when there are no elements, and smoother transition */
+}
+
+.task {
+  display: flex;
+  border: 1px solid lightgrey;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background-color: white;
+  min-height: 36px;
+  box-sizing: border-box;
+}
+
+.task-handle {
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.task-handle__icon {
+  width: 0px;
+  font-size: 22px;
+  padding-left: 14px;
+  padding-right: 17px;
+  position: relative;
+  top: -1px;
+  color: var(--draggable-handle-color);
+}
+
+.task-handle__icon::before {
+  content: ".";
+  text-shadow: -5px 0 var(--draggable-handle-color), -5px -5px var(--draggable-handle-color), 0 -5px var(--draggable-handle-color), -5px -10px var(--draggable-handle-color), 0 -10px var(--draggable-handle-color);
+  font-size: 16px;
+  color: var(--draggable-handle-color);
+}
+
+.task-label {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1px 0;
+}
+
+.task-select-destination {
+  font-size: 11px;
+  vertical-align: middle;
+  margin: auto 5px;
+}
