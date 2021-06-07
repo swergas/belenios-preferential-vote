@@ -1,4 +1,4 @@
-const {DragDropContext, Draggable, Droppable } = window.ReactBeautifulDnd;
+const { Draggable, Droppable } = window.ReactBeautifulDnd;
 const React = window.React;
 const ReactDOM = window.ReactDOM;
 const e = React.createElement;
@@ -7,21 +7,21 @@ const Handle = (props) => {
   return e(
     "div",
     {
-      className: "task-handle draggable",
+      className: "candidate-handle draggable",
       title: "Déplacer ce candidat",
       ...props
     },
     e(
       "div",
       {
-        className: "task-handle__icon"
+        className: "candidate-handle__icon"
       },
       //"⋮⋮" // or ✥
     )
   );
 }
 
-const Task = ({ task, index, otherColumns, onSelectDestinationColumn }) => {
+const Candidate = ({ candidate, index, otherColumns, onSelectDestinationColumn }) => {
   const otherPreferencesSelectOptions = otherColumns.map(column => {
     return e(
       "option",
@@ -42,7 +42,7 @@ const Task = ({ task, index, otherColumns, onSelectDestinationColumn }) => {
     return e(
       "div",
       {
-        className: "task",
+        className: "candidate",
         ...provided.draggableProps,
         ref: provided.innerRef
       },
@@ -55,14 +55,14 @@ const Task = ({ task, index, otherColumns, onSelectDestinationColumn }) => {
       e(
         "div",
         {
-          className: "task-label"
+          className: "candidate-label"
         },
-        task.content
+        candidate.content
       ),
       e(
         "select",
         {
-          className: "task-select-destination",
+          className: "candidate-select-destination",
           onChange: onSelectDestinationColumn,
           defaultValue: "default"
         },
@@ -73,18 +73,18 @@ const Task = ({ task, index, otherColumns, onSelectDestinationColumn }) => {
   return e(
     Draggable,
     {
-      draggableId: task.id,
+      draggableId: candidate.id,
       index: index,
       children: children
     }
   );
 }
 
-const TaskList = ({innerRef, placeholder, children, ...otherProps}) => {
+const CandidateList = ({innerRef, placeholder, children, ...otherProps}) => {
   return e(
     "div",
     {
-      className: "column-task-list",
+      className: "column-candidate-list",
       ref: innerRef,
       ...otherProps
     },
@@ -93,24 +93,22 @@ const TaskList = ({innerRef, placeholder, children, ...otherProps}) => {
   );
 };
 
-const Column = ({ column, label, otherColumns, tasks, onClickDeleteButton, onSelectTaskDestinationColumn }) => {
-  const rendered_tasks = tasks.map((task, index) => {
+const Column = ({ column, label, otherColumns, candidates, onClickDeleteButton, onSelectTaskDestinationColumn }) => {
+  const rendered_candidates = candidates.map((candidate, index) => {
     return e(
-      Task,
+      Candidate,
       {
-        key: task.id,
-        task,
+        key: candidate.id,
+        candidate,
         index,
         otherColumns,
         onSelectDestinationColumn: (event) => {
-          console.log("onSelectDestinationColumn() event:", event);
-          console.log("onSelectDestinationColumn() event.currentTarget.value:", event.currentTarget.value);
-          onSelectTaskDestinationColumn(task.id, index, event.currentTarget.value);
+          onSelectCandidateDestinationColumn(candidate.id, index, event.currentTarget.value);
         }
       }
     );
   });
-  const columnActions = column.id === "not-ranked" || tasks.length ? null : e(
+  const columnActions = column.id === "not-ranked" || candidates.length ? null : e(
     "div",
     {
       className: "column-actions"
@@ -150,13 +148,13 @@ const Column = ({ column, label, otherColumns, tasks, onClickDeleteButton, onSel
         droppableId: column.id,
         children: (provided) => {
           return e(
-            TaskList,
+            CandidateList,
             {
               innerRef: provided.innerRef,
               ...provided.droppableProps,
               placeholder: provided.placeholder
             },
-            ...rendered_tasks,
+            ...rendered_candidates,
           );
         }
       }

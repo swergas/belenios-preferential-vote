@@ -56,10 +56,6 @@ html {
   margin: 0;
 }
 
-.column-actions {
-
-}
-
 .column-actions__delete-column {
   background: #ccc;
   border-radius: 30px;
@@ -70,13 +66,13 @@ html {
   font-size: 20px;
 }
 
-.column-task-list {
+.column-candidate-list {
   padding: 8px;
   transition: all 350ms;
   min-height: 44px; /* for when there are no elements, and smoother transition */
 }
 
-.task {
+.candidate {
   display: flex;
   border: 1px solid lightgrey;
   border-radius: 8px;
@@ -86,14 +82,14 @@ html {
   box-sizing: border-box;
 }
 
-.task-handle {
+.candidate-handle {
   font-weight: bolder;
   display: flex;
   align-items: center;
   flex-direction: row;
 }
 
-.task-handle__icon {
+.candidate-handle__icon {
   width: 0px;
   font-size: 22px;
   padding-left: 14px;
@@ -103,14 +99,14 @@ html {
   color: var(--draggable-handle-color);
 }
 
-.task-handle__icon::before {
+.candidate-handle__icon::before {
   content: ".";
   text-shadow: -5px 0 var(--draggable-handle-color), -5px -5px var(--draggable-handle-color), 0 -5px var(--draggable-handle-color), -5px -10px var(--draggable-handle-color), 0 -10px var(--draggable-handle-color);
   font-size: 16px;
   color: var(--draggable-handle-color);
 }
 
-.task-label {
+.candidate-label {
   flex-grow: 1;
   display: flex;
   flex-direction: row;
@@ -118,7 +114,7 @@ html {
   padding: 1px 0;
 }
 
-.task-select-destination {
+.candidate-select-destination {
   font-size: 11px;
   vertical-align: middle;
   margin: auto 5px;

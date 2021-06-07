@@ -2,7 +2,7 @@ import initialData from './initialData.mjs';
 import Column from './Column.mjs';
 
 const React = window.React;
-const {DragDropContext, Draggable, Droppable } = window.ReactBeautifulDnd;
+const { DragDropContext } = window.ReactBeautifulDnd;
 const ReactDOM = window.ReactDOM;
 const e = React.createElement;
 
@@ -10,7 +10,7 @@ const buildColumnLabel = (column, columnOrderIndex) => {
   return column.title ? column.title : `Préférence ${columnOrderIndex+1}`; // TODO: i18n
 };
 
-const LevelCreatorButton = ({onClick}) => {
+const PreferenceLevelCreatorButton = ({onClick}) => {
   return e(
     "div",
     {
@@ -21,7 +21,7 @@ const LevelCreatorButton = ({onClick}) => {
       {
         className: "level-creator__add-icon clickable",
         onClick: onClick,
-        title: "Créer ici un niveau de préférence" // TODO: i18n
+        title: "+ Ajouter ici un niveau de préférence" // TODO: i18n
       },
       "+ Ajouter ici un niveau de préférence" // TODO: i18n
     )
@@ -33,31 +33,31 @@ class App extends React.Component {
     super(props);
     this.state = initialData;
     this.onDragEnd = this.onDragEnd.bind(this);
-    this.moveTask = this.moveTask.bind(this);
-    this.deleteColumn = this.deleteColumn.bind(this);
-    this.insertColumn = this.insertColumn.bind(this);
+    this.moveCandidate = this.moveCandidate.bind(this);
+    this.deletePreferenceLevel = this.deletePreferenceLevel.bind(this);
+    this.insertPreferenceLevel = this.insertPreferenceLevel.bind(this);
     this.render = this.render.bind(this);
   }
-  moveTask(taskId, sourceColumnId, destinationColumnId, sourceColumnTaskIndex, destinationColumnTaskIndex) {
+  moveCandidate(candidateId, sourceColumnId, destinationColumnId, sourceColumnCandidateIndex, destinationColumnCandidateIndex) {
     const sourceColumn = this.state.columns[sourceColumnId];
-    const newSourceColumnTaskIds = Array.from(sourceColumn.taskIds);
-    newSourceColumnTaskIds.splice(sourceColumnTaskIndex, 1);
+    const newSourceColumnCandidateIds = Array.from(sourceColumn.candidatesIds);
+    newSourceColumnCandidateIds.splice(sourceColumnCandidateIndex, 1);
     if (sourceColumnId === destinationColumnId){
-      newSourceColumnTaskIds.splice(destinationColumnTaskIndex, 0, taskId);
+      newSourceColumnCandidateIds.splice(destinationColumnCandidateIndex, 0, candidateId);
     }
     const newSourceColumn = {
       ...sourceColumn,
-      taskIds: newSourceColumnTaskIds
+      candidatesIds: newSourceColumnCandidateIds
     }
     let changedColumns = {};
     changedColumns[newSourceColumn.id] = newSourceColumn;
     if (sourceColumnId != destinationColumnId){
       const destinationColumn = this.state.columns[destinationColumnId];
-      const newDestinationColumnTaskIds = Array.from(destinationColumn.taskIds);
-      newDestinationColumnTaskIds.splice(destinationColumnTaskIndex, 0, taskId);
+      const newDestinationColumnCandidateIds = Array.from(destinationColumn.candidatesIds);
+      newDestinationColumnCandidateIds.splice(destinationColumnCandidateIndex, 0, candidateId);
       const newDestinationColumn = {
         ...destinationColumn,
-        taskIds: newDestinationColumnTaskIds
+        candidatesIds: newDestinationColumnCandidateIds
       };
       changedColumns[newDestinationColumn.id] = newDestinationColumn;
     }
@@ -71,14 +71,12 @@ class App extends React.Component {
     };
     this.setState(newState);
   }
-  deleteColumn(columnId) {
-    console.log(`deleting level ${columnId}`);
+  deletePreferenceLevel(columnId) {
     const index = this.state.columnOrder.findIndex(element => element == columnId);
     if (index === undefined){
       console.log(`/!\\ column id ${columnId} not found in this.state.columnOrder`);
       return;
     }
-    console.log(`Column ${columnId} found in this.state.columnOrder at index ${index}`);
     const newColumnOrder = Array.from(this.state.columnOrder);
     const newColumns = JSON.parse(JSON.stringify(this.state.columns));
     newColumnOrder.splice(index, 1);
@@ -93,14 +91,10 @@ class App extends React.Component {
       columns: newColumns,
       columnOrder: newColumnOrder
     };
-    console.log("this.state:", this.state);
-    console.log("newState:", newState);
     this.setState(newState);
   }
-  insertColumn(insertBeforeIndex) {
-    console.log("createLevelFunction()");
+  insertPreferenceLevel(insertBeforeIndex) {
     const newColumnId = `column-${this.state.columnOrder.length+1}`;
-    console.log("createLevelFunction() newColumnId:", newColumnId);
     const newColumnOrder = Array.from(this.state.columnOrder);
     newColumnOrder.splice(insertBeforeIndex, 0, newColumnId);
     const newState = {
@@ -109,13 +103,11 @@ class App extends React.Component {
         ...this.state.columns,
         [newColumnId]: {
           'id': newColumnId,
-          'taskIds': []
+          'candidatesIds': []
         }
       },
       columnOrder: newColumnOrder
     };
-    console.log("this.state:", this.state);
-    console.log("newState:", newState);
     this.setState(newState);
   }
   onDragEnd(result) {
@@ -126,7 +118,7 @@ class App extends React.Component {
     if (destination.droppableId === source.droppableId && destination.index === source.index){
       return;
     }
-    this.moveTask(draggableId, source.droppableId, destination.droppableId, source.index, destination.index);
+    this.moveCandidate(draggableId, source.droppableId, destination.droppableId, source.index, destination.index);
   }
   render() {
     const allColumns = this.state.columnOrder.map((columnId, index) => { return {id: columnId, label: buildColumnLabel(this.state.columns[columnId], index)}; });
@@ -137,17 +129,17 @@ class App extends React.Component {
           return e("div");
         }
         const column = this.state.columns[columnId];
-        const tasks = column.taskIds.map(taskId => this.state.tasks[taskId]);
+        const candidates = column.candidatesIds.map(candidateId => this.state.candidates[candidateId]);
         const otherColumns = Array.from(allColumns);
         otherColumns.splice(index, 1);
         return e(
           "div",
           null,
           e(
-            LevelCreatorButton,
+            PreferenceLevelCreatorButton,
             {
               onClick: () => {
-                this.insertColumn(index);
+                this.insertPreferenceLevel(index);
               }
             }
           ),
@@ -156,17 +148,14 @@ class App extends React.Component {
             {
               key: column.id,
               column: column,
-              tasks: tasks,
+              candidates: candidates,
               label: buildColumnLabel(column, index),
               onClickDeleteButton: () => {
-                this.deleteColumn(column.id);
+                this.deletePreferenceLevel(column.id);
               },
               otherColumns: otherColumns,
-              onSelectTaskDestinationColumn: (taskId, sourceColumnTaskIndex, destinationColumnId) => {
-                console.log("onSelectTaskDestinationColumn() taskId:", taskId);
-                console.log("onSelectTaskDestinationColumn() sourceColumnTaskIndex:", sourceColumnTaskIndex);
-                console.log("onSelectTaskDestinationColumn() destinationColumnId:", destinationColumnId);
-                this.moveTask(taskId, column.id, destinationColumnId, sourceColumnTaskIndex, this.state.columns[destinationColumnId].taskIds.length);
+              onSelectCandidateDestinationColumn: (candidateId, sourceColumnCandidateIndex, destinationColumnId) => {
+                this.moveCandidate(candidateId, column.id, destinationColumnId, sourceColumnCandidateIndex, this.state.columns[destinationColumnId].candidatesIds.length);
               }
             }
           )
