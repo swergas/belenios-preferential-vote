@@ -3,7 +3,7 @@ const React = window.React;
 const ReactDOM = window.ReactDOM;
 const e = React.createElement;
 
-const Handle = (props) => {
+const MoveCandidateHandle = (props) => {
   return e(
     "div",
     {
@@ -44,12 +44,13 @@ const Candidate = ({ candidate, index, otherColumns, onSelectDestinationColumn }
       {
         className: "candidate",
         ...provided.draggableProps,
+        ...provided.dragHandleProps,
         ref: provided.innerRef
       },
       e(
-        Handle,
+        MoveCandidateHandle,
         {
-          ...provided.dragHandleProps,
+          //...provided.dragHandleProps
         }
       ),
       e(
@@ -93,7 +94,25 @@ const CandidateList = ({innerRef, placeholder, children, ...otherProps}) => {
   );
 };
 
-const Column = ({ column, label, otherColumns, candidates, onClickDeleteButton, onSelectTaskDestinationColumn }) => {
+const DeletePreferenceLevelButton = ({onClick}) => {
+  return e(
+    "span",
+    {
+      className: "column-actions__delete-column clickable",
+      onClick,
+      title: "Supprimer ce niveau de préférence" // TODO: i18n
+    },
+    "🗑"
+  );
+};
+
+
+// A Column is a list which has a title (prop label) and which can contain candidates.
+// These candidates can be moved to other columns by drag & drop or using the select box next to each candidate.
+// The user can delete a Column if it contains no candidates.
+// A special kind of Column is when `column.id` is "not-ranked": this Column cannot be deleted.
+const Column = ({ column, label, otherColumns, candidates, onClickDeleteButton, onSelectCandidateDestinationColumn
+ }) => {
   const rendered_candidates = candidates.map((candidate, index) => {
     return e(
       Candidate,
@@ -108,19 +127,16 @@ const Column = ({ column, label, otherColumns, candidates, onClickDeleteButton, 
       }
     );
   });
-  const columnActions = column.id === "not-ranked" || candidates.length ? null : e(
+  const columnActions = column.id === "not-ranked" ? null : e(
     "div",
     {
       className: "column-actions"
     },
     e(
-      "span",
+      DeletePreferenceLevelButton,
       {
-        className: "column-actions__delete-column clickable",
-        onClick: onClickDeleteButton,
-        title: "Supprimer ce niveau de préférence" // TODO: i18n
-      },
-      "🗑"
+        onClick: onClickDeleteButton
+      }
     )
   );
   return e(

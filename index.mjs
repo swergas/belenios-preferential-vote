@@ -151,7 +151,13 @@ class App extends React.Component {
               candidates: candidates,
               label: buildColumnLabel(column, index),
               onClickDeleteButton: () => {
-                this.deletePreferenceLevel(column.id);
+                const canDeleteColumn = candidates.length == 0;
+                if (canDeleteColumn){
+                  this.deletePreferenceLevel(column.id);
+                }
+                else {
+                  alert("You can delete a level of preference only if it is empty. Please first move the candidates it contains to other preference levels."); // TODO: i18n
+                }
               },
               otherColumns: otherColumns,
               onSelectCandidateDestinationColumn: (candidateId, sourceColumnCandidateIndex, destinationColumnId) => {
