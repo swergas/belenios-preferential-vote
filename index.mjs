@@ -31,7 +31,10 @@ const PreferenceLevelCreatorButton = ({onClick}) => {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = initialData;
+    this.state = {
+      ...initialData,
+      createdColumnsCounter: initialData.columnOrder.length
+    };
     this.onDragEnd = this.onDragEnd.bind(this);
     this.moveCandidate = this.moveCandidate.bind(this);
     this.deletePreferenceLevel = this.deletePreferenceLevel.bind(this);
@@ -94,7 +97,7 @@ class App extends React.Component {
     this.setState(newState);
   }
   insertPreferenceLevel(insertBeforeIndex) {
-    const newColumnId = `column-${this.state.columnOrder.length+1}`;
+    const newColumnId = `column-${this.state.createdColumnsCounter}`;
     const newColumnOrder = Array.from(this.state.columnOrder);
     newColumnOrder.splice(insertBeforeIndex, 0, newColumnId);
     const newState = {
@@ -106,7 +109,8 @@ class App extends React.Component {
           'candidatesIds': []
         }
       },
-      columnOrder: newColumnOrder
+      columnOrder: newColumnOrder,
+      createdColumnsCounter: this.state.createdColumnsCounter+1
     };
     this.setState(newState);
   }
