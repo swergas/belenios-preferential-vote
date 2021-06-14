@@ -96,13 +96,20 @@ const CandidateList = ({innerRef, placeholder, children, ...otherProps}) => {
 
 const DeletePreferenceLevelButton = ({onClick}) => {
   return e(
-    "span",
+    "div",
     {
-      className: "column-actions__delete-column clickable",
+      className: "column-actions__action clickable",
       onClick,
       title: "Supprimer ce niveau de préférence" // TODO: i18n
     },
-    "🗑"
+    e(
+      "div",
+      {
+        className: "column-actions__action__delete-preference-level"
+      },
+      "×" // 🗑✖
+    )
+    
   );
 };
 
